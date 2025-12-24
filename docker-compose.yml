@@ -1,0 +1,25 @@
+﻿services:
+  db:
+    image: postgres:16
+    container_name: sar-db
+    environment:
+      POSTGRES_DB: sar
+      POSTGRES_USER: sar
+      POSTGRES_PASSWORD: sar
+    ports:
+      - "5432:5432"
+    volumes:
+      - sar_db:/var/lib/postgresql/data
+
+  api:
+    build: .
+    container_name: sar-api
+    environment:
+      DATABASE_URL: postgresql+psycopg2://sar:sar@db:5432/sar
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+volumes:
+  sar_db:
