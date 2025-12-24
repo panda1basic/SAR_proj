@@ -8,7 +8,7 @@
     body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 24px; }
     .wrap { max-width: 900px; margin: 0 auto; }
     .card { border: 1px solid #ddd; border-radius: 12px; padding: 16px; margin: 12px 0; }
-    input { padding: 10px; border-radius: 10px; border: 1px solid #ccc; width: 240px; }
+    input { padding: 10px; border-radius: 10px; border: 1px solid #ccc; width: 420px; }
     button { padding: 10px 14px; border-radius: 10px; border: 1px solid #ccc; cursor: pointer; }
     table { width: 100%; border-collapse: collapse; }
     th, td { border-bottom: 1px solid #eee; text-align: left; padding: 10px; }
@@ -18,18 +18,16 @@
 </head>
 <body>
   <div class="wrap">
-    <h1>SAR Demo (удовлетворительно)</h1>
+    <h1>SAR Demo</h1>
     <p class="muted">
-      Полезная нагрузка: веб-страница создаёт записи через <code>POST /api/items</code> и читает их из БД через <code>GET /api/items</code>.
+      Создаём записи через <code>POST /notes</code> и читаем из БД через <code>GET /notes</code>.
       SwaggerUI: <a href="/docs" target="_blank">/docs</a>
     </p>
 
     <div class="card">
-      <h3>Добавить запись</h3>
-      <p class="muted">Пример: name = "cpu load test", value = 42</p>
+      <h3>Добавить заметку</h3>
       <div style="display:flex; gap:10px; flex-wrap: wrap; align-items:center;">
-        <input id="name" placeholder="name" />
-        <input id="value" placeholder="value (int)" type="number" />
+        <input id="text" placeholder="text" />
         <button onclick="createItem()">Создать</button>
         <button onclick="loadItems()">Обновить список</button>
       </div>
@@ -37,12 +35,10 @@
     </div>
 
     <div class="card">
-      <h3>Записи из БД</h3>
+      <h3>Заметки из БД</h3>
       <table>
         <thead>
-          <tr>
-            <th>ID</th><th>Name</th><th>Value</th><th>Created</th>
-          </tr>
+          <tr><th>ID</th><th>Text</th></tr>
         </thead>
         <tbody id="rows"></tbody>
       </table>

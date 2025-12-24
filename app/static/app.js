@@ -1,12 +1,13 @@
 ﻿async function loadItems() {
   const rows = document.getElementById("rows");
   rows.innerHTML = "";
-  const res = await fetch("/api/items");
+
+  const res = await fetch("/notes");
   const data = await res.json();
 
-  for (const it of data) {
+  for (const it of data.items) {
     const tr = document.createElement("tr");
-    tr.innerHTML = <td></td><td></td><td></td><td></td>;
+    tr.innerHTML = `<td>${it.id}</td><td>${escapeHtml(it.text)}</td>`;
     rows.appendChild(tr);
   }
 }
@@ -14,18 +15,17 @@
 async function createItem() {
   const status = document.getElementById("status");
   status.textContent = "Отправляю запрос...";
-  const name = document.getElementById("name").value.trim();
-  const value = parseInt(document.getElementById("value").value, 10);
 
-  if (!name || Number.isNaN(value)) {
-    status.textContent = "Ошибка: заполните name и value (целое число).";
+  const text = document.getElementById("text").value.trim();
+  if (!text) {
+    status.textContent = "Ошибка: заполните text.";
     return;
   }
 
-  const res = await fetch("/api/items", {
+  const res = await fetch("/notes", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name, value })
+    body: JSON.stringify({ text })
   });
 
   if (!res.ok) {
@@ -35,14 +35,13 @@ async function createItem() {
   }
 
   const created = await res.json();
-  status.textContent = Создано: id=;
-  document.getElementById("name").value = "";
-  document.getElementById("value").value = "";
+  status.textContent = `Создано: id=${created.id}`;
+  document.getElementById("text").value = "";
   await loadItems();
 }
 
 function escapeHtml(s) {
-  return s.replace(/[&<>\"]/g, c => ({
+  return s.replace(/[&<>"]/g, c => ({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'
   }[c]));
 }

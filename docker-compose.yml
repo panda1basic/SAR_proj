@@ -10,16 +10,34 @@
       - "5432:5432"
     volumes:
       - sar_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sar -d sar"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  adminer:
+    image: adminer:4
+    container_name: sar-adminer
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
 
   api:
-    build: .
     container_name: sar-api
+    build:
+      context: .
+      dockerfile: Dockerfile
     environment:
       DATABASE_URL: postgresql+psycopg2://sar:sar@db:5432/sar
-    ports:
-      - "8000:8000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    ports:
+      - "8001:8000"
+    restart: unless-stopped
 
 volumes:
   sar_db:
