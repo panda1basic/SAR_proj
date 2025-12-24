@@ -3,45 +3,153 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>SAR Demo</title>
+  <title>Garazh</title>
   <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 24px; }
-    .wrap { max-width: 900px; margin: 0 auto; }
-    .card { border: 1px solid #ddd; border-radius: 12px; padding: 16px; margin: 12px 0; }
-    input { padding: 10px; border-radius: 10px; border: 1px solid #ccc; width: 420px; }
-    button { padding: 10px 14px; border-radius: 10px; border: 1px solid #ccc; cursor: pointer; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { border-bottom: 1px solid #eee; text-align: left; padding: 10px; }
-    .muted { color: #666; font-size: 14px; }
-    code { background: #f6f6f6; padding: 2px 6px; border-radius: 6px; }
+    :root{
+      --bg:#0b1020;
+      --card:#101a33;
+      --text:#eef2ff;
+      --muted:#a8b3cf;
+      --line:rgba(255,255,255,.10);
+      --accent:#7c9cff;
+      --danger:#ff6b6b;
+    }
+    body{
+      margin:0; background: radial-gradient(1200px 600px at 20% 0%, #1a2b55, var(--bg));
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      color:var(--text);
+    }
+    .wrap{ max-width: 980px; margin: 0 auto; padding: 28px 18px 40px; }
+    .top{
+      display:flex; gap:14px; align-items:center; justify-content:space-between; flex-wrap:wrap;
+      margin-bottom: 14px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px;
+    }
+    .logo{
+      width:44px; height:44px; border-radius:14px;
+      background: linear-gradient(135deg, var(--accent), #a77cff);
+      display:grid; place-items:center; font-size:22px;
+      box-shadow: 0 10px 30px rgba(124,156,255,.25);
+    }
+    h1{ font-size: 26px; margin:0; letter-spacing:.2px; }
+    .muted{ color:var(--muted); font-size:14px; margin:4px 0 0; }
+    .pill{
+      border:1px solid var(--line); border-radius:999px; padding:8px 12px;
+      font-size:13px; color:var(--muted);
+      background: rgba(255,255,255,.03);
+    }
+    .grid{ display:grid; grid-template-columns: 1fr; gap: 14px; }
+    @media(min-width: 900px){ .grid{ grid-template-columns: 360px 1fr; } }
+    .card{
+      background: rgba(16,26,51,.9);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.25);
+    }
+    label{ display:block; font-size:12px; color:var(--muted); margin: 10px 0 6px; }
+    input{
+      width:100%;
+      padding: 11px 12px;
+      border-radius: 14px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      color: var(--text);
+      outline: none;
+    }
+    input:focus{ border-color: rgba(124,156,255,.6); box-shadow: 0 0 0 3px rgba(124,156,255,.15); }
+    .row{ display:grid; gap:10px; grid-template-columns: 1fr 1fr; }
+    .btns{ display:flex; gap:10px; margin-top: 12px; flex-wrap:wrap; }
+    button{
+      padding: 10px 14px; border-radius: 14px;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      cursor:pointer;
+    }
+    button.primary{ border-color: rgba(124,156,255,.55); background: rgba(124,156,255,.15); }
+    button.danger{ border-color: rgba(255,107,107,.55); background: rgba(255,107,107,.12); }
+    button:hover{ filter: brightness(1.08); }
+    table{ width:100%; border-collapse: collapse; overflow:hidden; border-radius:14px; }
+    th, td{ padding: 12px 10px; border-bottom:1px solid var(--line); text-align:left; font-size:14px; }
+    th{ color: var(--muted); font-weight:600; }
+    tr:last-child td{ border-bottom:none; }
+    .actions{ display:flex; gap:8px; }
+    .status{ margin-top: 10px; color: var(--muted); font-size: 13px; min-height: 18px; }
+    a{ color: var(--accent); text-decoration: none; }
+    a:hover{ text-decoration: underline; }
+    .small{ font-size: 12px; color: var(--muted); }
+    .kbd{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: rgba(255,255,255,.06); border:1px solid var(--line); padding:2px 6px; border-radius:8px; }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>SAR Demo</h1>
-    <p class="muted">
-      Создаём записи через <code>POST /notes</code> и читаем из БД через <code>GET /notes</code>.
-      SwaggerUI: <a href="/docs" target="_blank">/docs</a>
-    </p>
-
-    <div class="card">
-      <h3>Добавить заметку</h3>
-      <div style="display:flex; gap:10px; flex-wrap: wrap; align-items:center;">
-        <input id="text" placeholder="text" />
-        <button onclick="createItem()">Создать</button>
-        <button onclick="loadItems()">Обновить список</button>
+    <div class="top">
+      <div class="brand">
+        <div class="logo">🚗</div>
+        <div>
+          <h1>Garazh</h1>
+          <div class="muted">Демо: CRUD для машин + PostgreSQL + FastAPI (Swagger: <a href="/docs" target="_blank">/docs</a>)</div>
+        </div>
       </div>
-      <p id="status" class="muted"></p>
+      <div class="pill">API: <span class="kbd">GET /cars</span> · <span class="kbd">POST /cars</span> · <span class="kbd">DELETE /cars/{id}</span></div>
     </div>
 
-    <div class="card">
-      <h3>Заметки из БД</h3>
-      <table>
-        <thead>
-          <tr><th>ID</th><th>Text</th></tr>
-        </thead>
-        <tbody id="rows"></tbody>
-      </table>
+    <div class="grid">
+      <div class="card">
+        <h3 style="margin:0 0 8px;">Добавить машину</h3>
+
+        <label>Марка</label>
+        <input id="brand" placeholder="Например: Toyota" />
+
+        <label>Модель</label>
+        <input id="model" placeholder="Например: Camry" />
+
+        <div class="row">
+          <div>
+            <label>Год</label>
+            <input id="year" type="number" placeholder="Например: 2020" />
+          </div>
+          <div>
+            <label>Госномер (опционально)</label>
+            <input id="plate" placeholder="Например: A777AA" />
+          </div>
+        </div>
+
+        <div class="btns">
+          <button class="primary" onclick="createCar()">Добавить</button>
+          <button onclick="loadCars()">Обновить список</button>
+        </div>
+
+        <div id="status" class="status"></div>
+        <div class="small">Под капотом: записи реально пишутся/читаются/удаляются из PostgreSQL.</div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+          <h3 style="margin:0;">Машины в гараже</h3>
+          <div class="small">Нажми «Удалить», чтобы проверить DELETE из БД</div>
+        </div>
+
+        <div style="margin-top:10px; overflow:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Марка</th>
+                <th>Модель</th>
+                <th>Год</th>
+                <th>Номер</th>
+                <th>Добавлена</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 
